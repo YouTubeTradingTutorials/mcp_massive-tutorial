@@ -9,7 +9,7 @@ __all__ = ["main"]
 def main() -> None:
     """
     Main CLI entry point for the MCP server.
-    Accepts --transport CLI argument (falls back to MCP_TRANSPORT env var, then stdio).
+    Accepts --transport CLI argument (falls back to MCP_TRANSPORT env var, then streamable-http).
 
     Heavy dependencies (numpy, etc.) are imported lazily inside this
     function so that ``uv run`` can finish installing packages and Python
@@ -25,11 +25,11 @@ def main() -> None:
         "--transport",
         choices=["stdio", "sse", "streamable-http"],
         default=None,
-        help="Transport protocol (default: stdio). Overrides MCP_TRANSPORT env var.",
+        help="Transport protocol (default: streamable-http). Overrides MCP_TRANSPORT env var.",
     )
     args = parser.parse_args()
 
-    # CLI arg takes precedence over env var; default to stdio
+    # CLI arg takes precedence over env var; default to streamable-http
     if args.transport is not None:
         transport: Literal["stdio", "sse", "streamable-http"] = args.transport
     else:
@@ -38,8 +38,8 @@ def main() -> None:
             "sse": "sse",
             "streamable-http": "streamable-http",
         }
-        mcp_transport_str = os.environ.get("MCP_TRANSPORT", "stdio")
-        transport = supported_transports.get(mcp_transport_str, "stdio")
+        mcp_transport_str = os.environ.get("MCP_TRANSPORT", "streamable-http")
+        transport = supported_transports.get(mcp_transport_str, "streamable-http")
 
     # Check API key and print startup message
     massive_api_key = os.environ.get("MASSIVE_API_KEY", "")

@@ -1,6 +1,7 @@
 import atexit
 import json
 import logging
+import os
 import re
 import ssl
 import threading
@@ -51,6 +52,10 @@ mass_mcp = FastMCP(
         "call_api to fetch the data. Use store_as + query_data for multi-step analysis. "
         "Covers: equities, options, ETFs, indices, FX, crypto — real-time and historical."
     ),
+    # Hosted mode: listen on all interfaces and on the port the platform assigns.
+    host=os.environ.get("HOST", "0.0.0.0"),
+    port=int(os.environ.get("PORT", "8000")),
+    streamable_http_path="/mcp",
 )
 
 METADATA_KEYS = {
